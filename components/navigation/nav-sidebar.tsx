@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { NavItem } from "./nav-item";
 import { ModeToggle } from "@/components/mode-toggle";
 import { UserButton } from "@clerk/nextjs";
+import VideoOverlay from "@/components/video-demo";
 
 export const NavSidebar = async () => {
   const profile = await currentProf();
@@ -40,6 +41,7 @@ export const NavSidebar = async () => {
         ))}
       </ScrollArea>
       <div className="pb-3 mt-auto flex items-center flex-col gap-y-4">
+        <VideoOverlay />
         <ModeToggle />
         <UserButton
           afterSignOutUrl="/"

@@ -5,12 +5,11 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Form, FormControl, FormItem, FormField } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea"; // Use a Textarea component
+import { Plus, Send } from "lucide-react";
 import axios from "axios";
 import qs from "query-string";
 import { useModal } from "@/hooks/use-model-store";
-import { EmojiPicker } from "../emoji-picker";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 
@@ -28,7 +27,7 @@ const formSchema = z.object({
 export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   const { onOpen } = useModal();
   const router = useRouter();
-  const refi = useRef<HTMLInputElement>(null);
+  const refi = useRef<HTMLTextAreaElement>(null); // Reference to the Textarea
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -70,23 +69,23 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                   >
                     <Plus className="text-white dark:text-[#313338]" />
                   </button>
-                  <Input
+                  <Textarea
                     disabled={isLoading}
                     autoFocus
-                    className="px-14 py-6 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200 "
+                    className="px-14 py-6 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200 resize-none"
                     placeholder={`Message ${
                       type === "conversation" ? name : "#" + name
                     }`}
                     {...field}
                     ref={refi}
+                    rows={1} // Allows for a few lines of text
                   />
-                  <div className="absolute top-7 right-8">
-                    <EmojiPicker
-                      onChange={(emoji: string) =>
-                        field.onChange(`${field.value} ${emoji}`)
-                      }
-                    />
-                  </div>
+                  <button
+                    type="submit"
+                    className="absolute top-7 right-8 h-[24px] w-[24px] bg-blue-500 hover:bg-blue-600 transition rounded-full p-1 flex items-center justify-center"
+                  >
+                    <Send className="text-white" />
+                  </button>
                 </div>
               </FormControl>
             </FormItem>

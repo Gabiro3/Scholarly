@@ -12,8 +12,8 @@ import { ModalProvider } from "@/components/providers/model-provider";
 const font = Open_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ChatCord",
-  description: "Discord-clone",
+  title: "Scholarly | Online Students Community",
+  description: "Scholarly is a Rwandan-based online student collaboration platform that allows university students to collaborate on class work and engage in group discussions all via one platform.",
   icons: {
     icon: "https://discord.com/assets/847541504914fd33810e70a0ea73177e.icottps://discord.com/favicon.ico",
   },
@@ -30,7 +30,7 @@ export default function RootLayout({
         <body className={cn(font.className, "bg-white dark:bg-[#313338]")}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="light"
             enableSystem={true}
             storageKey="discord-theme"
           >
