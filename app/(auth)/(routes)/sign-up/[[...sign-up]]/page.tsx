@@ -18,7 +18,7 @@ export default function Page() {
               Join Our Waitlist
             </h1>
             <p className="text-gray-600">
-              We're excited to have you on board! Fill out the form below to join our waitlist and be one of the first to experience our platform.
+              We&#39re excited to have you on board! Fill out the form below to join our waitlist and be one of the first to experience our platform.
             </p>
             <a
               href="https://forms.gle/nDHvbhJuTZEp2Fje9"
