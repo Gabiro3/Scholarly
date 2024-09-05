@@ -15,9 +15,10 @@ export const metadata: Metadata = {
   title: "Scholarly | Online Students Community",
   description: "Scholarly is a Rwandan-based online student collaboration platform that allows university students to collaborate on class work and engage in group discussions all via one platform.",
   icons: {
-    icon: "https://discord.com/assets/847541504914fd33810e70a0ea73177e.icottps://discord.com/favicon.ico",
+    icon: "/icon.png", // Use the relative path to the icon file
   },
 };
+
 
 export default function RootLayout({
   children,
@@ -30,7 +31,7 @@ export default function RootLayout({
         <body className={cn(font.className, "bg-white dark:bg-[#313338]")}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
+            defaultTheme="dark"
             enableSystem={true}
             storageKey="discord-theme"
           >
