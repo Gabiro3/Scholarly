@@ -1,10 +1,9 @@
 "use client";
 
 import { Smile } from "lucide-react";
-import Picker from "@emoji-mart/react";
+import Picker from '@emoji-mart/react';
 import data from "@emoji-mart/data";
 import { useTheme } from "next-themes";
-
 import {
   Popover,
   PopoverContent,
@@ -17,24 +16,33 @@ interface EmojiPickerProps {
 
 export const EmojiPicker = ({ onChange }: EmojiPickerProps) => {
   const { resolvedTheme } = useTheme();
+
+  // Handle emoji selection
+  const handleSelectEmoji = (emoji: { native: string }) => {
+    onChange(emoji.native); // Call the onChange prop with the selected emoji
+  };
+
   return (
-    <Popover>
-      <PopoverTrigger>
-        <Smile className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
-      </PopoverTrigger>
-      <PopoverContent
-        side="right"
-        sideOffset={40}
-        className="bg-transparent border-none shadow-none drop-shadow-none mb-16"
-      >
-        <Picker
-          data={data}
-          theme={resolvedTheme}
-          onEmojiSelect={(emoji: any) => onChange(emoji.native)}
-        />
-      </PopoverContent>
-    </Popover>
+    <div className="flex items-center">
+      <Popover>
+        <PopoverTrigger>
+          <Smile className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
+        </PopoverTrigger>
+        <PopoverContent
+          side="right"
+          sideOffset={40}
+          className="bg-transparent border-none shadow-none drop-shadow-none mb-16"
+        >
+          <Picker
+            set='apple'
+            data={data} // Pass the data prop to Picker if needed
+            onSelect={handleSelectEmoji} // Use the correct handler
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 };
+
 
 
