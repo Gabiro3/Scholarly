@@ -11,8 +11,8 @@ import qs from "query-string";
 import { useModal } from "@/hooks/use-model-store";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
-import { EmojiPicker } from "../emoji-picker"; // Import the EmojiPicker component
-
+//import { EmojiPicker } from "../emoji-picker"; // Import the EmojiPicker component
+import Picker from '@emoji-mart/react';
 interface ChatInputProps {
   apiUrl: string;
   query: Record<string, any>;
@@ -99,7 +99,7 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                   />
                   {/* Emoji Picker */}
                   <div className="absolute top-7 right-20">
-                    <EmojiPicker onChange={addEmoji} />
+                    <Picker set='apple' />
                   </div>
 
                   <button
