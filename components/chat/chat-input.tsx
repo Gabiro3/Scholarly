@@ -48,12 +48,25 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
       form.reset();
       router.refresh();
     } catch (error) {
-      //console.log(error);
+      console.error(error);
       return error;
     }
   };
 
-
+  const addEmoji = (emoji: string) => {
+    if (refi.current) {
+      const cursorPosition = refi.current.selectionStart || 0;
+      const text =
+        form.getValues("content").slice(0, cursorPosition) +
+        emoji +
+        form.getValues("content").slice(cursorPosition);
+      form.setValue("content", text);
+      const newCursorPosition = cursorPosition + emoji.length;
+      setTimeout(() => {
+        refi.current?.setSelectionRange(newCursorPosition, newCursorPosition);
+      }, 10);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -84,13 +97,9 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                     ref={refi}
                     rows={1}
                   />
-
-<div className="absolute top-7 right-8">
-                    <EmojiPicker
-                      onChange={(emoji: string) =>
-                        field.onChange(`${field.value} ${emoji}`)
-                      }
-                    />
+                  {/* Emoji Picker */}
+                  <div className="absolute top-7 right-20">
+                    <EmojiPicker onChange={addEmoji} />
                   </div>
 
                   <button
@@ -108,4 +117,5 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
     </Form>
   );
 };
+
 
