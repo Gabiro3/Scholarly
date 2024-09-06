@@ -3,15 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
+import { useState, useRef } from "react";
 import { Form, FormControl, FormItem, FormField } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea"; // Use a Textarea component
-import { Plus, Send } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Send } from "lucide-react"; 
 import axios from "axios";
 import qs from "query-string";
 import { useModal } from "@/hooks/use-model-store";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
 import { EmojiPicker } from "../emoji-picker";
 
 interface ChatInputProps {
@@ -36,6 +35,7 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
     },
     resolver: zodResolver(formSchema),
   });
+
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -50,6 +50,18 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
       router.refresh();
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  // Handle adding emoji to the text field
+  const addEmoji = (emoji: string) => {
+    if (refi.current) {
+      const cursorPos = refi.current.selectionStart;
+      const text = refi.current.value;
+      const newText = text.slice(0, cursorPos) + emoji + text.slice(cursorPos);
+      refi.current.value = newText;
+      form.setValue("content", newText); // Update form content
+      refi.current.focus();
     }
   };
 
@@ -70,11 +82,7 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                   >
                     <Plus className="text-white dark:text-[#313338]" />
                   </button>
-                    <EmojiPicker
-                      onChange={(emoji: string) =>
-                        field.onChange(`${field.value} ${emoji}`)
-                      }
-                    />
+
                   <Textarea
                     disabled={isLoading}
                     autoFocus
@@ -86,6 +94,12 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                     ref={refi}
                     rows={1} // Allows for a few lines of text
                   />
+
+                  {/* Emoji Picker */}
+                  <div className="absolute top-7 right-20">
+                    <EmojiPicker onChange={addEmoji} />
+                  </div>
+
                   <button
                     type="submit"
                     className="absolute top-7 right-8 h-[24px] w-[24px] bg-blue-500 hover:bg-blue-600 transition rounded-full p-1 flex items-center justify-center"
@@ -101,3 +115,4 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
     </Form>
   );
 };
+
