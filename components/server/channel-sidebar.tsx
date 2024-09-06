@@ -111,7 +111,7 @@ const ChannelSidebar = async ({ serverId }: ChannelSidebarProps) => {
                 })),
               },
               {
-                label: "Members",
+                label: "Chat with Members",
                 type: "member",
                 data: members?.map((member) => ({
                   icon: roleIconMap[member.role],

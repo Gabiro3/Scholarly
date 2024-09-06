@@ -1,5 +1,4 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -11,8 +10,8 @@ import qs from "query-string";
 import { useModal } from "@/hooks/use-model-store";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
-//import { EmojiPicker } from "../emoji-picker"; // Import the EmojiPicker component
-import Picker from '@emoji-mart/react';
+import { EmojiPicker } from "../emoji-picker"; // Import the EmojiPicker component
+
 interface ChatInputProps {
   apiUrl: string;
   query: Record<string, any>;
@@ -97,10 +96,6 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                     ref={refi}
                     rows={1}
                   />
-                  {/* Emoji Picker */}
-                  <div className="absolute top-7 right-20">
-                    <Picker set='apple' />
-                  </div>
 
                   <button
                     type="submit"
