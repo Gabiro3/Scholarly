@@ -23,24 +23,27 @@ export const EmojiPicker = ({ onChange }: EmojiPickerProps) => {
 
   return (
     <Popover>
-      <PopoverTrigger>
-        <Smile className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
+      <PopoverTrigger asChild>
+        <button type="button" className="p-1 bg-transparent border-none">
+          <Smile className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
+        </button>
       </PopoverTrigger>
       <PopoverContent
         side="right"
-        sideOffset={10} // Adjusted for better positioning
+        sideOffset={10}
         className="bg-transparent border-none shadow-none drop-shadow-none"
       >
         <Picker
           set='apple'
           data={data}
           onSelect={handleSelectEmoji}
-          theme={resolvedTheme} // Ensure picker theme matches the current theme
+          theme={resolvedTheme}
         />
       </PopoverContent>
     </Popover>
   );
 };
+
 
 
 
