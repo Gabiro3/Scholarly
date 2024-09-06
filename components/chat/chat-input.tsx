@@ -70,13 +70,11 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                   >
                     <Plus className="text-white dark:text-[#313338]" />
                   </button>
-                  <div className="absolute top-7 right-8">
                     <EmojiPicker
                       onChange={(emoji: string) =>
                         field.onChange(`${field.value} ${emoji}`)
                       }
                     />
-                  </div>
                   <Textarea
                     disabled={isLoading}
                     autoFocus
