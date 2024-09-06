@@ -3,15 +3,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState, useRef } from "react";
 import { Form, FormControl, FormItem, FormField } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Send } from "lucide-react"; 
+import { Plus, Send } from "lucide-react";
 import axios from "axios";
 import qs from "query-string";
 import { useModal } from "@/hooks/use-model-store";
 import { useRouter } from "next/navigation";
-import { EmojiPicker } from "../emoji-picker";
+import { useRef } from "react";
+import { EmojiPicker } from "../emoji-picker"; // Import the EmojiPicker component
 
 interface ChatInputProps {
   apiUrl: string;
@@ -27,7 +27,7 @@ const formSchema = z.object({
 export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   const { onOpen } = useModal();
   const router = useRouter();
-  const refi = useRef<HTMLTextAreaElement>(null); // Reference to the Textarea
+  const refi = useRef<HTMLTextAreaElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -35,7 +35,6 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
     },
     resolver: zodResolver(formSchema),
   });
-
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -53,16 +52,10 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
     }
   };
 
-  // Handle adding emoji to the text field
-  const addEmoji = (emoji: string) => {
-    if (refi.current) {
-      const cursorPos = refi.current.selectionStart;
-      const text = refi.current.value;
-      const newText = text.slice(0, cursorPos) + emoji + text.slice(cursorPos);
-      refi.current.value = newText;
-      form.setValue("content", newText); // Update form content
-      refi.current.focus();
-    }
+  // Function to handle emoji selection
+  const handleEmojiSelect = (emoji: string) => {
+    form.setValue("content", form.getValues("content") + emoji);
+    refi.current?.focus();
   };
 
   return (
@@ -92,12 +85,11 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                     }`}
                     {...field}
                     ref={refi}
-                    rows={1} // Allows for a few lines of text
+                    rows={1}
                   />
 
-                  {/* Emoji Picker */}
-                  <div className="absolute top-7 right-20">
-                    <EmojiPicker onChange={addEmoji} />
+                  <div className="absolute top-7 left-20">
+                    <EmojiPicker onChange={handleEmojiSelect} /> {/* Emoji picker */}
                   </div>
 
                   <button
