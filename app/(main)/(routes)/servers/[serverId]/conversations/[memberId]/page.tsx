@@ -7,6 +7,7 @@ import { currentProf } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import { currentUser } from "@clerk/nextjs/server";
 
 interface MemberIdPageProps {
   params: {
@@ -20,10 +21,19 @@ interface MemberIdPageProps {
 
 const MemberIdPage = async ({ params, searchParams }: MemberIdPageProps) => {
   const profile = await currentProf();
+  const user = await currentUser();
 
   if (!profile) {
     return redirectToSignIn();
   }
+  //Update the user's credentials everytime they open the conversations page.
+  await db.profile.update({
+    where: { user_id: user?.id },
+    data: {
+      name: `${user?.firstName} ${user?.lastName}`,
+      imageUrl: user?.imageUrl,
+    },
+  });
 
   const currentMember = await db.member.findFirst({
     where: {
