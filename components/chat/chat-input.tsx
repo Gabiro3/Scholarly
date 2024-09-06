@@ -48,15 +48,12 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
       form.reset();
       router.refresh();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
+      return error;
     }
   };
 
-  // Function to handle emoji selection
-  const handleEmojiSelect = (emoji: string) => {
-    form.setValue("content", form.getValues("content") + emoji);
-    refi.current?.focus();
-  };
+
 
   return (
     <Form {...form}>
@@ -88,8 +85,12 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                     rows={1}
                   />
 
-                  <div className="absolute top-7 left-20">
-                    <EmojiPicker onChange={handleEmojiSelect} /> {/* Emoji picker */}
+<div className="absolute top-7 right-8">
+                    <EmojiPicker
+                      onChange={(emoji: string) =>
+                        field.onChange(`${field.value} ${emoji}`)
+                      }
+                    />
                   </div>
 
                   <button
