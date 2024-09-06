@@ -94,7 +94,7 @@ export default async function handler(
 
 
     } catch (error) {
-        console.log('[MESSAGES_POST_CONVERSATION]', error);
+        //console.log('[MESSAGES_POST_CONVERSATION]', error);
         return res.status(500).json({ error: 'Internal server error' });
         
     }
