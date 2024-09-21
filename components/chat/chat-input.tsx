@@ -1,16 +1,16 @@
 "use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form, FormControl, FormItem, FormField } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Send } from "lucide-react";
-import axios from "axios";
-import qs from "query-string";
 import { useModal } from "@/hooks/use-model-store";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
-import { EmojiPicker } from "../emoji-picker"; // Import the EmojiPicker component
+import { useRef, useState, useEffect } from "react";
+import { io, Socket } from "socket.io-client"; // Import Socket.IO client and types
+import axios from "axios"; // Import axios
 
 interface ChatInputProps {
   apiUrl: string;
@@ -28,6 +28,17 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   const router = useRouter();
   const refi = useRef<HTMLTextAreaElement>(null);
 
+  const [socket, setSocket] = useState<Socket | null>(null); // Manage the socket state with explicit type
+
+  useEffect(() => {
+    const newSocket: Socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!); // Connect to the Socket.IO server
+    setSocket(newSocket); // Set the socket instance
+
+    return () => {
+      newSocket.close(); // Clean up the socket connection
+    };
+  }, []);
+
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       content: "",
@@ -36,34 +47,29 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   });
   const isLoading = form.formState.isSubmitting;
 
+  // Optimistically render the message and emit it via Socket.IO
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const url = qs.stringifyUrl({
-        url: apiUrl,
-        query,
-      });
+    if (!socket) return; // Ensure the socket is available
 
+    try {
+      // Emit the message through the socket
+      const messageData = {
+        content: values.content,
+        type,
+        ...query, // Include query details (e.g., channel, conversation)
+      };
+
+      // Optimistically update the chat UI (message immediately appears)
+      socket.emit("message", messageData);
+
+      // Optionally send the message to your backend to persist in the DB
+      const url = apiUrl; // URL for the POST request
       await axios.post(url, values);
-      form.reset();
-      router.refresh();
+
+      form.reset(); // Reset the form
+      router.refresh(); // Refresh the page or chat to get latest messages
     } catch (error) {
       console.error(error);
-      return error;
-    }
-  };
-
-  const addEmoji = (emoji: string) => {
-    if (refi.current) {
-      const cursorPosition = refi.current.selectionStart || 0;
-      const text =
-        form.getValues("content").slice(0, cursorPosition) +
-        emoji +
-        form.getValues("content").slice(cursorPosition);
-      form.setValue("content", text);
-      const newCursorPosition = cursorPosition + emoji.length;
-      setTimeout(() => {
-        refi.current?.setSelectionRange(newCursorPosition, newCursorPosition);
-      }, 10);
     }
   };
 
@@ -112,5 +118,3 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
     </Form>
   );
 };
-
-

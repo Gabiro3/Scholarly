@@ -1,16 +1,20 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { io as ClientIO } from "socket.io-client";
+import { io as ClientIO, Socket } from "socket.io-client";
 
 type SocketContextType = {
-  socket: any | null;
+  socket: Socket | null;
   isConnected: boolean;
+  sendMessage: (message: any) => void;
+  messages: any[];
 };
 
 const SocketContext = createContext<SocketContextType>({
   socket: null,
   isConnected: false,
+  sendMessage: () => {},
+  messages: [],
 });
 
 export const useSocket = () => {
@@ -18,17 +22,15 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [messages, setMessages] = useState<any[]>([]);
 
   useEffect(() => {
-    const socketInstance = new (ClientIO as any)(
-      process.env.NEXT_PUBLIC_SITE_URL!,
-      {
-        path: "/api/socket/io",
-        addTrailingSlash: false,
-      }
-    );
+    const socketInstance: Socket = ClientIO(process.env.NEXT_PUBLIC_SITE_URL!, {
+      path: "/api/socket/io",
+      addTrailingSlash: false,
+    });
 
     socketInstance.on("connect", () => {
       setIsConnected(true);
@@ -38,6 +40,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       setIsConnected(false);
     });
 
+    // Listen for incoming messages and update state
+    socketInstance.on("message", (newMessage: any) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+
     setSocket(socketInstance);
 
     return () => {
@@ -45,8 +52,14 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
+  const sendMessage = (message: any) => {
+    if (socket) {
+      socket.emit("message", message);
+    }
+  };
+
   return (
-    <SocketContext.Provider value={{ socket, isConnected }}>
+    <SocketContext.Provider value={{ socket, isConnected, sendMessage, messages }}>
       {children}
     </SocketContext.Provider>
   );
