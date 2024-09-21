@@ -1,4 +1,4 @@
-"use client";
+"client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -9,7 +9,7 @@ import { Plus, Send } from "lucide-react";
 import { useModal } from "@/hooks/use-model-store";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
-import { io, Socket } from "socket.io-client"; // Import Socket.IO client and types
+import { io, Socket } from "socket.io-client"; // Correct import
 import axios from "axios"; // Import axios
 
 interface ChatInputProps {
@@ -28,14 +28,14 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   const router = useRouter();
   const refi = useRef<HTMLTextAreaElement>(null);
 
-  const [socket, setSocket] = useState<Socket | null>(null); // Manage the socket state with explicit type
+  const [socket, setSocket] = useState<Socket | null>(null); // Properly typed
 
   useEffect(() => {
     const newSocket: Socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!); // Connect to the Socket.IO server
-    setSocket(newSocket); // Set the socket instance
+    setSocket(newSocket);
 
     return () => {
-      newSocket.close(); // Clean up the socket connection
+      newSocket.close();
     };
   }, []);
 
@@ -47,27 +47,23 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   });
   const isLoading = form.formState.isSubmitting;
 
-  // Optimistically render the message and emit it via Socket.IO
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!socket) return; // Ensure the socket is available
+    if (!socket) return;
 
     try {
-      // Emit the message through the socket
       const messageData = {
         content: values.content,
         type,
-        ...query, // Include query details (e.g., channel, conversation)
+        ...query, 
       };
 
-      // Optimistically update the chat UI (message immediately appears)
       socket.emit("message", messageData);
 
-      // Optionally send the message to your backend to persist in the DB
-      const url = apiUrl; // URL for the POST request
+      const url = apiUrl;
       await axios.post(url, values);
 
-      form.reset(); // Reset the form
-      router.refresh(); // Refresh the page or chat to get latest messages
+      form.reset();
+      router.refresh();
     } catch (error) {
       console.error(error);
     }
