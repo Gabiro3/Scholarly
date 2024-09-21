@@ -1,16 +1,16 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form, FormControl, FormItem, FormField } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Send } from "lucide-react";
+import axios from "axios";
+import qs from "query-string";
 import { useModal } from "@/hooks/use-model-store";
 import { useRouter } from "next/navigation";
-import { useRef, useState, useEffect } from "react";
-import { io, Socket } from "socket.io-client"; // Correct import
-import axios from "axios"; // Import axios
+import { useRef } from "react";
+import { EmojiPicker } from "../emoji-picker"; // Import the EmojiPicker component
 
 interface ChatInputProps {
   apiUrl: string;
@@ -28,17 +28,6 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   const router = useRouter();
   const refi = useRef<HTMLTextAreaElement>(null);
 
-  const [socket, setSocket] = useState<Socket | null>(null); // Properly typed
-
-  useEffect(() => {
-    const newSocket: Socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!); // Connect to the Socket.IO server
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.close();
-    };
-  }, []);
-
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       content: "",
@@ -48,26 +37,21 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!socket) return;
-
     try {
-      const messageData = {
-        content: values.content,
-        type,
-        ...query, 
-      };
+      const url = qs.stringifyUrl({
+        url: apiUrl,
+        query,
+      });
 
-      socket.emit("message", messageData);
-
-      const url = apiUrl;
       await axios.post(url, values);
-
       form.reset();
       router.refresh();
     } catch (error) {
       console.error(error);
+      return error;
     }
   };
+
 
   return (
     <Form {...form}>
@@ -114,3 +98,5 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
     </Form>
   );
 };
+
+

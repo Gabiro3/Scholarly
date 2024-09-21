@@ -1,14 +1,18 @@
-"use client"
-import { Fragment, useRef, ElementRef, useState, useEffect } from "react";
+"use client";
+
+import { Fragment, useRef, ElementRef } from "react";
 import { format, isSameDay } from "date-fns";
 import { Member, Message, Profile } from "@prisma/client";
 import { Loader2, ServerCrash } from "lucide-react";
-import { io as ClientIO } from "socket.io-client";  // Import socket.io-client
 
 import { useChatQuery } from "@/hooks/use-chat-query";
+import { useChatSocket } from "@/hooks/use-chat-socket";
+
 import { ChatWelcome } from "./chat-welcome";
 import { ChatItem } from "./chat-item";
 import { useChatScroll } from "@/hooks/use-chat-scroll";
+
+// Import a custom date separator
 import CustomDateSeparator from "@/components/date-separator";
 
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
@@ -49,10 +53,6 @@ export const ChatMessages = ({
   const chatRef = useRef<ElementRef<"div">>(null);
   const bottomRef = useRef<ElementRef<"div">>(null);
 
-  // State for messages coming from API and Socket
-  const [messages, setMessages] = useState<MessageWithMemberWithProfile[]>([]);
-
-  // Fetch old messages from the API
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useChatQuery({
       queryKey,
@@ -60,8 +60,7 @@ export const ChatMessages = ({
       paramKey,
       paramValue,
     });
-
-  // Handle scrolling
+  useChatSocket({ queryKey, addKey, updateKey });
   useChatScroll({
     chatRef,
     bottomRef,
@@ -69,36 +68,6 @@ export const ChatMessages = ({
     shouldLoadMore: !isFetchingNextPage && !!hasNextPage,
     count: data?.pages?.[0]?.items?.length ?? 0,
   });
-
-  // Connect to Socket.IO and listen for new messages
-  useEffect(() => {
-    const socket = ClientIO(socketUrl, { query: socketQuery });
-
-    socket.on("connect", () => {
-      console.log("Socket connected");
-    });
-
-    // Listen for new messages
-    socket.on("new_message", (newMessage: MessageWithMemberWithProfile) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("Socket disconnected");
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [socketUrl, socketQuery]);
-
-  // Merge old API messages with new socket messages
-  useEffect(() => {
-    if (data) {
-      const oldMessages = data.pages.flatMap((page) => page.items);
-      setMessages((prevMessages) => [...oldMessages, ...prevMessages]);
-    }
-  }, [data]);
 
   if (status === "loading") {
     return (
@@ -141,37 +110,46 @@ export const ChatMessages = ({
         </div>
       )}
       <div className="flex flex-col-reverse mt-auto">
-        {messages
-          .filter((message) => message.content !== "This message has been deleted.")
-          .map((message, index, arr) => {
-            const messageDate = new Date(message.createdAt);
-            const previousMessageDate =
-              index > 0 ? new Date(arr[index - 1].createdAt) : null;
-            const showDateSeparator =
-              !previousMessageDate || !isSameDay(messageDate, previousMessageDate);
+        {data?.pages?.map((group, i) => (
+          <Fragment key={i}>
+            {group.items
+              .filter(
+                (message: MessageWithMemberWithProfile) =>
+                  message.content !== "This message has been deleted."
+              )
+              .map((message: MessageWithMemberWithProfile, index: number, arr: MessageWithMemberWithProfile[]) => {
+                const messageDate = new Date(message.createdAt);
+                const previousMessageDate =
+                  index > 0 ? new Date(arr[index - 1].createdAt) : null;
+                const showDateSeparator =
+                  !previousMessageDate ||
+                  !isSameDay(messageDate, previousMessageDate);
 
-            return (
-              <Fragment key={message.id}>
-                {showDateSeparator && <CustomDateSeparator date={messageDate} />}
-                <ChatItem
-                  id={message.id}
-                  currentMember={member}
-                  member={message.member}
-                  content={message.content}
-                  fileUrl={message.fileUrl}
-                  deleted={message.delete}
-                  timestamp={format(messageDate, DATE_FORMAT)}
-                  isUpdated={message.updatedAt !== message.createdAt}
-                  socketUrl={socketUrl}
-                  socketQuery={socketQuery}
-                />
-              </Fragment>
-            );
-          })}
+                return (
+                  <Fragment key={message.id}>
+                    {showDateSeparator && (
+                      <CustomDateSeparator date={messageDate} />
+                    )}
+                    <ChatItem
+                      id={message.id}
+                      currentMember={member}
+                      member={message.member}
+                      content={message.content}
+                      fileUrl={message.fileUrl}
+                      deleted={message.delete}
+                      timestamp={format(messageDate, DATE_FORMAT)}
+                      isUpdated={message.updatedAt !== message.createdAt}
+                      socketUrl={socketUrl}
+                      socketQuery={socketQuery}
+                    />
+                  </Fragment>
+                );
+              })}
+          </Fragment>
+        ))}
       </div>
 
       <div ref={bottomRef} />
     </div>
   );
 };
-
