@@ -14,7 +14,10 @@ const nextConfig = {
             "uploadthing.com",
             "utfs.io"
         ]
-    }
+    },
+    experimental: {
+        serverActions: true, // Enable Server Actions feature
+    },
 }
 
 module.exports = nextConfig
