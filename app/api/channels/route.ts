@@ -2,6 +2,7 @@ import { currentProf } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { toast } from "react-hot-toast";
 
 export async function POST(
     req: Request,
@@ -47,11 +48,13 @@ export async function POST(
                 }
             }
         })
+        toast.success("Channel created successfully!")
 
         return NextResponse.json(server);
         
     } catch (error) {
         //console.log("[CHANNELS_POST]", error);
+        toast.error("Create channel failed, contact side admin!");
         return new NextResponse("Internal error", {status: 500});
     }
     

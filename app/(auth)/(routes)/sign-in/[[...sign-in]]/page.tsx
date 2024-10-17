@@ -7,10 +7,9 @@ export default function Page() {
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
         <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
           <Image
-            alt=""
+            alt="Cover"
             src="/images/img.avif" // Use the relative path to the image
             className="absolute inset-0 h-full w-full object-cover"
-            layout="fill" // Ensure image fills the area
           />
         </aside>
 

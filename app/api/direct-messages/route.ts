@@ -3,6 +3,7 @@ import { DirectMessage, Message } from "@prisma/client";
 
 import { currentProf } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import { toast } from "react-hot-toast"
 
 const MESSAGES_BATCH = 10;
 
@@ -77,7 +78,7 @@ export async function GET(
       nextCursor
     });
   } catch (error) {
-    console.log("[MESSAGES_GET_CONVERSATION]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    toast.error("Error fetching messages, Try reloading the page!")
+    return new NextResponse(`Could not get messages`, { status: 500 });
   }
 }

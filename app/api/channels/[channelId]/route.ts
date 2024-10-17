@@ -2,6 +2,7 @@ import { currentProf } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { toast } from "react-hot-toast"
 
 export async function DELETE(
     req: Request,
@@ -49,10 +50,11 @@ export async function DELETE(
                 }
             }
         })
+        toast.success("Channel deleted successfully!")
         return NextResponse.json(server)
     } catch (error) {
-        console.log("[CHANNEL_ID_DELETE]",error);
-        return new NextResponse("Internal Error", {status: 500})
+        toast.error("Delete channel failed, contact site admin!")
+        return new NextResponse(`An error occurred: ${error}`, {status: 500})
     }
 }
 

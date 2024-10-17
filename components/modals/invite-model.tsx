@@ -15,6 +15,7 @@ import { Check, Copy, RefreshCw } from "lucide-react";
 import { useOrigin } from "@/hooks/use-origin";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast"
 
 export const InviteModal = () => {
   const { onOpen, isOpen, onClose, type, data } = useModal();
@@ -28,6 +29,7 @@ export const InviteModal = () => {
   const onCopy = () => {
     navigator.clipboard.writeText(inviteUrl);
     setCopied(true);
+    toast.success("Invitation link copied!");
 
     setTimeout(() => {
       setCopied(false);

@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
 import { NextResponse } from "next/server"
 import {v4 as uuidv4} from "uuid"
+import { toast } from "react-hot-toast"
 
 
 export async function POST(req:Request) {
@@ -30,10 +31,11 @@ export async function POST(req:Request) {
                         {profileId: profile.id, role: MemberRole.ADMIN},
                     ]}
             }
-        })  
+        })
+        toast.success("Server created successfully!")  
         return NextResponse.json(server)
     } catch (error) {
-        console.log("[SERVERS_POST]", error);
+        toast.error("Something went wrong, Contact side admin!")
         return new NextResponse("Internal Error", {status: 500})
         
     }

@@ -2,6 +2,7 @@ import { currentProf } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { log } from "console";
 import { NextResponse } from "next/server";
+import { toast } from "react-hot-toast"
 
 
 export async function DELETE(
@@ -50,12 +51,14 @@ export async function DELETE(
                 }
             }
         })
+        toast.success("Member removed successfully!")
 
         return NextResponse.json(server)
 
     } catch (error) {
         //console.log("[MEMBERS_ID_DELETE]", error);
-        return new NextResponse("Internal Error", {status: 500});
+        toast.error("Could not delete member, Try again!")
+        return new NextResponse(`An error occurred [MEMBERS_ID_DELETE]: ${error}`, {status: 500});
     }
 }
 
