@@ -16,7 +16,7 @@ const AuthCallbackPage = () => {
     });
 
     if (data?.success) {
-        router.push("/dashboard");
+        router.push("/");
     }
 
     return (
