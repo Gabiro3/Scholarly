@@ -35,7 +35,6 @@ export async function POST(req:Request) {
         toast.success("Server created successfully!")  
         return NextResponse.json(server)
     } catch (error) {
-        toast.error("Something went wrong, Contact side admin!")
         return new NextResponse("Internal Error", {status: 500})
         
     }

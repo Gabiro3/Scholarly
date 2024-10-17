@@ -54,7 +54,6 @@ export async function POST(
         
     } catch (error) {
         //console.log("[CHANNELS_POST]", error);
-        toast.error("Create channel failed, contact side admin!");
         return new NextResponse("Internal error", {status: 500});
     }
     

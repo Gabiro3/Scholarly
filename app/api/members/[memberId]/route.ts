@@ -56,8 +56,6 @@ export async function DELETE(
         return NextResponse.json(server)
 
     } catch (error) {
-        //console.log("[MEMBERS_ID_DELETE]", error);
-        toast.error("Could not delete member, Try again!")
         return new NextResponse(`An error occurred [MEMBERS_ID_DELETE]: ${error}`, {status: 500});
     }
 }

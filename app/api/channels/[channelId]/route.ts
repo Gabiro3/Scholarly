@@ -53,7 +53,6 @@ export async function DELETE(
         toast.success("Channel deleted successfully!")
         return NextResponse.json(server)
     } catch (error) {
-        toast.error("Delete channel failed, contact site admin!")
         return new NextResponse(`An error occurred: ${error}`, {status: 500})
     }
 }
