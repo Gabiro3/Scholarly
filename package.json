@@ -38,6 +38,7 @@
     "date-fns": "^2.30.0",
     "emoji-mart": "^5.5.2",
     "emoji-mart-native": "^0.6.5-beta",
+    "input-otp": "^1.2.4",
     "livekit-client": "^1.14.0",
     "livekit-server-sdk": "^1.2.6",
     "lucide-react": "^0.284.0",

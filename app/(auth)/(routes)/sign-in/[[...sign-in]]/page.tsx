@@ -1,24 +1,42 @@
-import { SignIn } from "@clerk/nextjs";
-import Image from "next/image";
+import SignInForm from "@/components/auth/sign-in-form";
+import Link from "next/link";
 
-export default function Page() {
-  return (
-    <section className="bg-white">
-      <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-        <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
-          <Image
-            alt="Cover"
-            src="/images/img.avif" // Use the relative path to the image
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        </aside>
+const SignInPage = () => {
+    return (
+        <div className="flex flex-col items-start max-w-sm mx-auto h-dvh overflow-hidden pt-4 md:pt-20">
+            <div className="flex items-center w-full py-8 border-b border-border/80">
+                <Link href="/#home" className="flex items-center gap-x-2">
+                    <h1 className="text-lg font-medium">
+                        Scholarly
+                    </h1>
+                </Link>
+            </div>
 
-        <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
-          <SignIn />
-        </main>
-      </div>
-    </section>
-  );
-}
+            <SignInForm />
 
+            <div className="flex flex-col items-start w-full">
+                <p className="text-sm text-muted-foreground">
+                    By signing in, you agree to our{" "}
+                    <Link href="/terms" className="text-primary">
+                        Terms of Service{" "}
+                    </Link>
+                    and{" "}
+                    <Link href="/privacy" className="text-primary">
+                        Privacy Policy
+                    </Link>
+                </p>
+            </div>
+            <div className="flex items-start mt-auto border-t border-border/80 py-6 w-full">
+                <p className="text-sm text-muted-foreground">
+                    Don&apos;t have an account?{" "}
+                    <Link href="/auth/sign-up" className="text-primary">
+                        Sign up
+                    </Link>
+                </p>
+            </div>
+        </div>
+    )
+};
+
+export default SignInPage
 
