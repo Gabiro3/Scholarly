@@ -79,6 +79,6 @@ export async function GET(
     });
   } catch (error) {
     toast.error("Error fetching messages, Try reloading the page!")
-    return new NextResponse(`Could not get messages`, { status: 500 });
+    return new NextResponse("Could not get messages", { status: 500 });
   }
 }
