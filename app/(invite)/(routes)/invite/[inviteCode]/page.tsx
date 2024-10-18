@@ -1,8 +1,7 @@
 import { currentProf } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { toast } from "react-hot-toast"
+import { initialProfile } from "@/lib/initial-profile"; // Import initialProfile util
 
 interface InviteCodeProps {
   params: {
@@ -11,15 +10,21 @@ interface InviteCodeProps {
 }
 
 const InviteCode = async ({ params }: InviteCodeProps) => {
-  const profile = await currentProf();
+  // Ensure the profile exists or create it if not
+  let profile = await currentProf();
 
   if (!profile) {
-    return redirectToSignIn();
+    profile = await initialProfile();  // Create the profile if it doesn't exist
+  }
+
+  if (!profile) {
+    return redirect("/"); // If profile creation still failed, redirect to home
   }
 
   if (!params.inviteCode) {
-    return redirect("/");
+    return redirect("/"); // If invite code is missing, redirect to home
   }
+
   const existingServer = await db.server.findFirst({
     where: {
       inviteCode: params.inviteCode,
@@ -34,6 +39,7 @@ const InviteCode = async ({ params }: InviteCodeProps) => {
   if (existingServer) {
     return redirect(`/servers/${existingServer.id}`);
   }
+
   const server = await db.server.update({
     where: {
       inviteCode: params.inviteCode,
@@ -44,11 +50,13 @@ const InviteCode = async ({ params }: InviteCodeProps) => {
       },
     },
   });
+
   if (server) {
-    return redirect("/servers/" + server.id);
+    return redirect(`/servers/${server.id}`);
   }
 
   return null;
 };
 
 export default InviteCode;
+
