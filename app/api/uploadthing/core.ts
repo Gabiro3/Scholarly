@@ -14,15 +14,11 @@ export const ourFileRouter = {
   serverImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
     .middleware(() => handle())
     .onUploadComplete(() => {
-      // Trigger success toast when upload completes
-      toast.success('Image uploaded successfully!');
     }),
 
   messageFile: f(["image", "pdf"])
     .middleware(() => handle())
     .onUploadComplete(() => {
-      // Trigger success toast when upload completes
-      toast.success('File uploaded successfully!');
     })
 } satisfies FileRouter;
 

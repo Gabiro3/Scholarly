@@ -48,7 +48,6 @@ export async function POST(
                 }
             }
         })
-        toast.success("Channel created successfully!")
 
         return NextResponse.json(server);
         

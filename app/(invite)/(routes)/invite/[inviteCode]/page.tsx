@@ -18,7 +18,6 @@ const InviteCode = async ({ params }: InviteCodeProps) => {
   }
 
   if (!params.inviteCode) {
-    toast.error("Could not find invite code!")
     return redirect("/");
   }
   const existingServer = await db.server.findFirst({
@@ -46,7 +45,6 @@ const InviteCode = async ({ params }: InviteCodeProps) => {
     },
   });
   if (server) {
-    toast.success("Hooray! You joined this server. Happy Learning!")
     return redirect("/servers/" + server.id);
   }
 

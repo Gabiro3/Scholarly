@@ -51,7 +51,6 @@ export async function DELETE(
                 }
             }
         })
-        toast.success("Member removed successfully!")
 
         return NextResponse.json(server)
 
