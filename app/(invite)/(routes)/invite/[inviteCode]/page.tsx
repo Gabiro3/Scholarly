@@ -17,10 +17,6 @@ const InviteCode = async ({ params }: InviteCodeProps) => {
     profile = await initialProfile();  // Create the profile if it doesn't exist
   }
 
-  if (!profile) {
-    return redirect("/"); // If profile creation still failed, redirect to home
-  }
-
   if (!params.inviteCode) {
     return redirect("/"); // If invite code is missing, redirect to home
   }
