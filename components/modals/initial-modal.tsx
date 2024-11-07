@@ -79,7 +79,7 @@ export const InitialModal = () => {
                     <Input
                       disabled={isLoading}
                       className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-                      placeholder="https://dev-garden-dusky.vercel.app/invite/7a726709-59ba-4191-8355-c5a515742d0d"
+                      placeholder="https://scholarly-rwanda.vercel.app/invite/af8f9f4d-4fd0-412c-889a-0b42845133a0"
                       {...field}
                     />
                   </FormControl>
