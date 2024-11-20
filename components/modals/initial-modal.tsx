@@ -60,9 +60,9 @@ export const InitialModal = () => {
     <Dialog open>
       <DialogContent className="bg-white text-black p-0 overflow-hidden">
         <DialogHeader className="pt-8 px-6">
-          <DialogTitle className="text-2xl text-center font-bold">Join a Server</DialogTitle>
+          <DialogTitle className="text-2xl text-center font-bold">Join a Study-Room</DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
-            Enter an invite below to join an existing server
+            Enter an invite below to join an existing study-room
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -89,7 +89,7 @@ export const InitialModal = () => {
             />
             <DialogFooter>
               <Button type="submit" variant="primary" disabled={isLoading}>
-                Join Server
+                Join room
               </Button>
             </DialogFooter>
           </form>

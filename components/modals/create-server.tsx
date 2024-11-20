@@ -75,10 +75,10 @@ export const ServerModal = () => {
       <DialogContent className="bg-white text-black p-0 overflow-hidden">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
-            Customize your server
+            Customize your study-room
           </DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
-            Give your server a cute name and an image, You can always change it
+            Give your study-room a cute name and an image, You can always change it
             later.
           </DialogDescription>
         </DialogHeader>
@@ -112,31 +112,25 @@ export const ServerModal = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
-                      Server name
+                      Study-room name
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={isLoading}
                         className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-                        placeholder="Enter server name"
+                        placeholder="Enter study-room name"
                         {...field}
                       />
                     </FormControl>
                     <FormMessage />
 
-                    <a
-                      className="underline text-indigo-500"
-                      href="http://localhost:3000/invite/01fb727b-7c94-4b2a-a5ee-9ef54da3c303"
-                    >
-                      Join this server
-                    </a>
                   </FormItem>
                 )}
               />
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
               <Button variant="primary" disabled={isLoading}>
-                Create server
+                Create study-room
               </Button>
             </DialogFooter>
           </form>
