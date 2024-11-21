@@ -9,6 +9,7 @@ import { NavItem } from "./nav-item";
 import { ModeToggle } from "@/components/mode-toggle";
 import { UserButton } from "@clerk/nextjs";
 import VideoOverlay from "@/components/video-demo";
+import ChatGPTOverlay from "../ai-chat";
 
 export const NavSidebar = async () => {
   const profile = await currentProf();
@@ -41,6 +42,7 @@ export const NavSidebar = async () => {
         ))}
       </ScrollArea>
       <div className="pb-3 mt-auto flex items-center flex-col gap-y-4">
+        <ChatGPTOverlay />
         <VideoOverlay />
         <ModeToggle />
         <UserButton
