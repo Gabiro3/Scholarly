@@ -10,6 +10,7 @@ import qs from "query-string";
 import { useModal } from "@/hooks/use-model-store";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
+import { EmojiPicker } from "../emoji-picker"; // Import the EmojiPicker component
 
 interface ChatInputProps {
   apiUrl: string;
@@ -36,59 +37,20 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const tempMessage = {
-      id: `temp-${Date.now()}`, // Temporary ID
-      content: values.content,
-      member: name, // Pass the current member info
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      isUpdated: false,
-    };
-  
-    // Update local UI immediately
-    query.setQueryData(query, (oldData: any) => {
-      return {
-        ...oldData,
-        pages: [
-          ...oldData.pages,
-          { items: [...(oldData.pages?.[0]?.items || []), tempMessage] },
-        ],
-      };
-    });
-  
     try {
       const url = qs.stringifyUrl({
         url: apiUrl,
         query,
       });
-  
-      // Send to backend
+
       await axios.post(url, values);
-  
-      // Refresh to sync with the backend data
+      form.reset();
       router.refresh();
     } catch (error) {
-      console.error("Message sending failed", error);
-  
-      // Optionally remove the temp message on failure
-      query.setQueryData(query, (oldData: any) => {
-        return {
-          ...oldData,
-          pages: [
-            ...oldData.pages,
-            {
-              items: oldData.pages?.[0]?.items.filter(
-                (msg: any) => msg.id !== tempMessage.id
-              ),
-            },
-          ],
-        };
-      });
-    } finally {
-      form.reset();
+      console.error(error);
+      return error;
     }
   };
-  
 
 
   return (
