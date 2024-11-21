@@ -5,7 +5,6 @@ import { MediaRoom } from "@/components/media-room";
 import { getOrCreateConversation } from "@/lib/conversation";
 import { currentProf } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
 
@@ -24,7 +23,7 @@ const MemberIdPage = async ({ params, searchParams }: MemberIdPageProps) => {
   const user = await currentUser();
 
   if (!profile) {
-    return redirectToSignIn();
+    return redirect('/sign-in');
   }
   //Update the user's credentials everytime they open the conversations page.
   await db.profile.update({
