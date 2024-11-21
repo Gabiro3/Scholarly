@@ -1,6 +1,5 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { auth } from "@clerk/nextjs";
-import { toast } from "react-hot-toast"; // Import toast from react-hot-toast
 
 const f = createUploadthing();
 
