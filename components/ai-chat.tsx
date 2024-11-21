@@ -33,7 +33,7 @@ const ChatGPTOverlay = () => {
 
             {/* ChatGPT Iframe */}
             <iframe
-              src="https://chat.openai.com/" /* Replace with your iframe source if customized */
+              src="https://chatgpt.com/" /* Replace with your iframe source if customized */
               className="w-full h-[80vh] rounded-lg"
               title="ChatGPT"
               frameBorder="0"
