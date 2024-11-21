@@ -10,7 +10,6 @@ import qs from "query-string";
 import { useModal } from "@/hooks/use-model-store";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
-import { EmojiPicker } from "../emoji-picker"; // Import the EmojiPicker component
 
 interface ChatInputProps {
   apiUrl: string;
@@ -27,6 +26,16 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   const { onOpen } = useModal();
   const router = useRouter();
   const refi = useRef<HTMLTextAreaElement>(null);
+
+  const sendSound = useRef<HTMLAudioElement | null>(null);
+  const receiveSound = useRef<HTMLAudioElement | null>(null);
+
+  // Load sounds
+  if (!sendSound.current) sendSound.current = new Audio("/sounds/send.mp3");
+
+  const playSound = (soundType: "send" | "receive") => {
+    if (soundType === "send") sendSound.current?.play();
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -45,13 +54,13 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
 
       await axios.post(url, values);
       form.reset();
+      playSound("send"); // Play send sound
       router.refresh();
     } catch (error) {
       console.error(error);
       return error;
     }
   };
-
 
   return (
     <Form {...form}>
@@ -98,5 +107,6 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
     </Form>
   );
 };
+
 
 
