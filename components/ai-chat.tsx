@@ -33,7 +33,7 @@ const ChatGPTOverlay = () => {
 
             {/* ChatGPT Iframe */}
             <iframe
-              src="https://chatgpt.com/" /* Replace with your iframe source if customized */
+              src="https://chat.vercel.ai/" /* Replace with your iframe source if customized */
               className="w-full h-[80vh] rounded-lg"
               title="ChatGPT"
               frameBorder="0"
